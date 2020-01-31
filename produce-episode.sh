@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd $1
 
 start_time=`date +%s`
