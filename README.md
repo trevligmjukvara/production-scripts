@@ -27,5 +27,5 @@ The scripts assume that they are placed in a certain folder structure...
 
 ## Usage
 
-'./produce-episode.sh MIXED_RECORDINGS_FOLDER TITLE SUBTITLE'
+`./produce-episode.sh MIXED_RECORDINGS_FOLDER TITLE SUBTITLE`
 
