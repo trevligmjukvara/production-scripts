@@ -60,10 +60,13 @@ ffmpeg -y -i .artifacts/all.flac  -af \
   $1.flac
 
 LOG "(8/8) PRODUCE MP3"
-ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 320k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-320.mp3"
-ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 128k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-128.mp3"
+ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 320k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-320.mp3" &
+ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 128k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-128.mp3" &
+wait
 
 end_time=`date +%s`
 
 
-LOG "ALL DONE IN $((end_time-start_time)) SECONDS"
+LOG "AUDIO PRODUCED IN $((end_time-start_time)) SECONDS"
+
+sh ./produce-video.sh "$1-128" $2 $3
