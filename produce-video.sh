@@ -15,7 +15,7 @@ rm -rf .video_artifacts/*
 
 LOG "RUNNING AVP"
 avp tm_template --comp 98 text "title=$3" --comp 99 text "title=$2" -i "../Finished Episodes/$1.mp3" -o ".video_artifacts/$1.mkv"
-ffmpeg -i ".artifacts/$1.mkv" -i "../Finished Episodes/$1.mp3" -c copy -map 0:v:0 -map 1:a:0 "../Finished Episodes/$1.mkv"
+ffmpeg -i ".video_artifacts/$1.mkv" -i "../Finished Episodes/$1.mp3" -c copy -map 0:v:0 -map 1:a:0 "../Finished Episodes/$1.mkv"
 
 end_time=`date +%s`
 
