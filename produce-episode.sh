@@ -42,8 +42,8 @@ ffmpeg -y -i .artifacts/seb-stitched.flac -filter_complex  "compand=points=-40/-
 wait
 
 LOG "(4/8) HIGH-LOW VOICE PASS"
-ffmpeg -y -i .artifacts/alex-compressed.flac -af highpass=150,lowpass=7000 -ar 44100 .artifacts/alex-passes.flac &
-ffmpeg -y -i .artifacts/seb-compressed.flac -af highpass=150,lowpass=7000 -ar 44100 .artifacts/seb-passes.flac &
+ffmpeg -y -i .artifacts/alex-compressed.flac -af highpass=120,lowpass=7000 -ar 44100 .artifacts/alex-passes.flac &
+ffmpeg -y -i .artifacts/seb-compressed.flac -af highpass=120,lowpass=7000 -ar 44100 .artifacts/seb-passes.flac &
 wait
 
 LOG "(5/8) NORMALIZE SOUNDBOARD"
