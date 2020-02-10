@@ -37,13 +37,13 @@ ffmpeg-normalize .artifacts/alex-stitched.flac .artifacts/seb-stitched.flac -tp 
 
 
 LOG "(3/8) PRE NORMALIZER COMPRESSOR/LIMITER/GAINER"
-ffmpeg -y -i .artifacts/alex-stitched.flac -filter_complex "compand=points=-40/-900|-35/-30|-30/-20|-25/-15|-20/-10|-10/-6|0/-3|20/-2" .artifacts/alex-compressed.flac &
-ffmpeg -y -i .artifacts/seb-stitched.flac -filter_complex  "compand=points=-40/-900|-35/-30|-30/-20|-25/-15|-20/-10|-10/-6|0/-3|20/-2" .artifacts/seb-compressed.flac &
+ffmpeg -y -i .artifacts/alex-stitched.flac -filter_complex "compand=points=-40/-900|-35/-30|-30/-20|-25/-15|-20/-10|-10/-4|0/-2|20/-2" .artifacts/alex-compressed.flac &
+ffmpeg -y -i .artifacts/seb-stitched.flac -filter_complex  "compand=points=-40/-900|-35/-30|-30/-20|-25/-15|-20/-10|-10/-4|0/-2|20/-2" .artifacts/seb-compressed.flac &
 wait
 
 LOG "(4/8) HIGH-LOW VOICE PASS"
-ffmpeg -y -i .artifacts/alex-compressed.flac -af highpass=120,lowpass=7000 -ar 44100 .artifacts/alex-passes.flac &
-ffmpeg -y -i .artifacts/seb-compressed.flac -af highpass=120,lowpass=7000 -ar 44100 .artifacts/seb-passes.flac &
+ffmpeg -y -i .artifacts/alex-compressed.flac -af highpass=120,lowpass=6700 -ar 44100 .artifacts/alex-passes.flac &
+ffmpeg -y -i .artifacts/seb-compressed.flac -af highpass=120,lowpass=6700 -ar 44100 .artifacts/seb-passes.flac &
 wait
 
 LOG "(5/8) NORMALIZE SOUNDBOARD"
@@ -56,17 +56,16 @@ sox -M .artifacts/sb.flac .artifacts/alex-passes.flac .artifacts/seb-passes.flac
 
 LOG "(7/8) DOWNWARD COMPRESSION"
 ffmpeg -y -i .artifacts/all.flac  -af \
-  acompressor=threshold=0.6:ratio=3:attack=15:release=100 \
+  acompressor=threshold=0.9:ratio=3:attack=15:release=100 \
   $1.flac
 
 LOG "(8/8) PRODUCE MP3"
-ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 320k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-320.mp3" &
-ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 128k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-128.mp3" &
-wait
+ffmpeg -y -i $1.flac -vn -ar 44100 -ac 2 -ab 192k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-192.mp3"
+
 
 end_time=`date +%s`
 
 
 LOG "AUDIO PRODUCED IN $((end_time-start_time)) SECONDS"
 
-sh ./produce-video.sh "$1-128" $2 $3
+#sh ./produce-video.sh "$1-192" $2 $3
