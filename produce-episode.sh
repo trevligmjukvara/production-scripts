@@ -33,8 +33,8 @@ ffmpeg -i sb-1.flac -i sb-2.flac \
 wait
 
 LOG "(2/7) HIGH-LOW VOICE PASS"
-ffmpeg -y -i .artifacts/alex-stitched.flac -af highpass=110,lowpass=7500 .artifacts/alex-passes.flac &
-ffmpeg -y -i .artifacts/seb-stitched.flac -af highpass=125,lowpass=6500 .artifacts/seb-passes.flac &
+ffmpeg -y -i .artifacts/alex-stitched.flac -af highpass=110,lowpass=7700 .artifacts/alex-passes.flac &
+ffmpeg -y -i .artifacts/seb-stitched.flac -af highpass=125,lowpass=7000 .artifacts/seb-passes.flac &
 wait
 
 
@@ -43,8 +43,8 @@ ffmpeg-normalize .artifacts/alex-passes.flac .artifacts/seb-passes.flac -tp 0 -o
 
 
 LOG "(4/7) PRE NORMALIZER COMPRESSOR/LIMITER/GAINER"
-ffmpeg -y -i .artifacts/alex-passes.flac -filter_complex "compand=points=-40/-900|-35/-25|-30/-18|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/alex-compressed.flac &
-ffmpeg -y -i .artifacts/seb-passes.flac -filter_complex  "compand=points=-40/-900|-35/-25|-30/-18|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/seb-compressed.flac &
+ffmpeg -y -i .artifacts/alex-passes.flac -filter_complex "compand=points=-40/-900|-35/-30|-30/-20|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/alex-compressed.flac &
+ffmpeg -y -i .artifacts/seb-passes.flac -filter_complex  "compand=points=-40/-900|-35/-30|-30/-20|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/seb-compressed.flac &
 wait
 
 LOG "(5/7) NORMALIZE SOUNDBOARD"
