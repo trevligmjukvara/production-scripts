@@ -7,6 +7,9 @@ Scripts used to produce episodes of Trevlig Mjukvara.
 - ffmpeg-normalize
 - sox
 - avp (audio-visualizer-python, feature-newgui branch) 
+- chapters-support:
+    - mp3chaps (pip3 install mp3chaps)
+    - tinytag (pip3 install tinytag)
 
 ## Assumptions
 
