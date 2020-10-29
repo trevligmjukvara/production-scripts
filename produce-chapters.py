@@ -2,7 +2,7 @@
 # *-* encoding: utf-8 -*-
 """
 Usage:
-  produce-chapters.py <part1_mp3?> <audacity_labels_part1> <audacity_labels_part2_file> <target_mp3>
+  produce-chapters.py <part1_flac> <audacity_labels_part1> <audacity_labels_part2_file> <target_mp3>
 """
 
 from eyed3.id3 import Tag
@@ -12,15 +12,23 @@ import sys
 from docopt import docopt
 from tinytag import TinyTag  # for flac length parsing
 
+class Chapter:
+    start = 0
+    end = 0
+    title = "title"
 
 def parse_chapters_file(fname, offset_ms):
     filename = os.path.splitext(fname)
     chaps = []
     with open(fname, "r") as f:
         for line in f.readlines():
-            time, title = line.split(2)[0], " ".join(line.split()[1:])
-            print("Wazup " + title)
-            chaps.append((int((float(time)*1000) + offset_ms), title))
+            time, title = line.split()[0], u" ".join(line.split()[2:])
+            timeMs = int((float(time)*1000) + offset_ms)
+            chap = Chapter()
+            chap.start = timeMs
+            chap.title = title;
+            chaps.append(chap)
+            print("{} seconds in: '{}'".format( timeMs/1000, title))
     return chaps
 
 
@@ -28,23 +36,30 @@ def add_chapters(tag, fname, chaps):
     audioFile = core.load(fname)
     total_length = audioFile.info.time_secs * 1000
     tag.setTextFrame(b"TLEN", str(int(total_length)))
-    chaps_ = []
     for i, chap in enumerate(chaps):
         if i < (len(chaps)-1):
-            chaps_.append(((chap[0], chaps[i+1][0]), chap[1]))
-    chaps_.append(((chaps[-1][0], total_length), chaps[-1][1]))
+            chap.end = chaps[i+1].start
+
+    chaps[-1].end = total_length;
+
     index = 0
     child_ids = []
-    for chap in chaps_:
+    for chap in chaps:
         element_id = "ch{}".format(index).encode()
-        times, title = chap
-        new_chap = tag.chapters.set(element_id, times)
-        new_chap.sub_frames.setTextFrame(b"TIT2", u"{}".format(title))
+        print ("Adding chapter {} at {}".format(chap.title,chap.start))
+        new_chap = tag.chapters.set(element_id, (chap.start, chap.end))
+        new_chap.sub_frames.setTextFrame(b"TIT2", u"{}".format(chap.title))
         child_ids.append(element_id)
         index += 1
     tag.table_of_contents.set(b"toc", child_ids=child_ids)
+    list_chaps(tag)
     tag.save()
 
+def list_chaps(tag):
+  "list chapters in tag"
+  print("Chapters:")
+  for chap in tag.chapters:
+    print(chap.sub_frames.get(b"TIT2")[0]._text)
 
 def main():
     "Entry point"
@@ -58,8 +73,9 @@ def main():
     tag.parse(target_mp3)
 
     chapters = []
-    chapters.append(parse_chapters_file(chapters_p1_file, 0))
-    chapters.append(parse_chapters_file(chapters_p2_file, part1_length))
+    chapters += parse_chapters_file(chapters_p1_file, 0)
+    chapters += parse_chapters_file(chapters_p2_file, part1_length)
+    print (len(chapters))
 
     add_chapters(tag, target_mp3, chapters)
 
