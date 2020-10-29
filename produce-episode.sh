@@ -55,18 +55,13 @@ LOG "(6/7) MERGE ALL"
 sox -M .artifacts/sb.flac .artifacts/alex-compressed.flac .artifacts/seb-compressed.flac .artifacts/all.flac remix -m -p 1,3,4 2,3,4
 
 
-# LOG "(7/7) DOWNWARD COMPRESSION"
-# ffmpeg -y -i .artifacts/all.flac  -af \
-#   acompressor=threshold=0.9:ratio=3:attack=15:release=100 \
-#   $1.flac
-
 LOG "(7/7) PRODUCE MP3"
 ffmpeg -y -i .artifacts/all.flac -vn -ar 44100 -ac 2 -ab 192k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-192.mp3"
 
 
+LOG "(BONUS) ADD CHAPTERS TO MP3"
+./produce-chapters.py $1/alex-1.flac $1/labels-1.txt $1/labels-2.txt "../Finished Episodes/$1-192.mp3"
+
+
 end_time=`date +%s`
-
-
 LOG "AUDIO PRODUCED IN $((end_time-start_time)) SECONDS"
-
-#sh ./produce-video.sh "$1-192" $2 $3
