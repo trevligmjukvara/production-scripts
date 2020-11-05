@@ -60,7 +60,7 @@ ffmpeg -y -i .artifacts/all.flac -vn -ar 44100 -ac 2 -ab 192k -f mp3 -joint_ster
 
 
 LOG "(BONUS) ADD CHAPTERS TO MP3"
-./produce-chapters.py $1/alex-1.flac $1/labels-1.txt $1/labels-2.txt "../Finished Episodes/$1-192.mp3"
+../produce-chapters.py alex-1.flac labels-1.txt labels-2.txt "../../Finished Episodes/$1-192.mp3"
 
 
 end_time=`date +%s`
