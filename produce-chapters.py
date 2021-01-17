@@ -36,7 +36,7 @@ def parse_chapters_file(fname, offset_ms):
 
 def add_chapters(fname, chaps):
     tag = Tag()
-    tag.parse(target_mp3)
+    tag.parse(fname)
     audioFile = core.load(fname)
     total_length = audioFile.info.time_secs * 1000
     tag.setTextFrame(b"TLEN", str(int(total_length)))
