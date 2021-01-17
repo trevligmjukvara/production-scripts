@@ -11,6 +11,10 @@ import os
 import sys
 from docopt import docopt
 from tinytag import TinyTag  # for flac length parsing
+from pydub import AudioSegment
+from pathlib import Path
+import subprocess
+import tempfile
 
 
 class Chapter:
@@ -20,7 +24,6 @@ class Chapter:
 
 
 def parse_chapters_file(fname, offset_ms):
-    filename = os.path.splitext(fname)
     chaps = []
     with open(fname, "r") as f:
         for line in f.readlines():
@@ -60,6 +63,38 @@ def add_chapters(fname, chaps):
     tag.save()
 
 
+def generate_video_per_chapter(fname, chaps, chapters_folder, title, background_image_file):
+    with tempfile.TemporaryDirectory() as tmpdir:
+        audio = AudioSegment.from_mp3(fname)
+        ignored_chapters = ["outro", "intro", "bloopers", "utmaningar", "meta"]
+        wanted_chapters = list(
+            filter(lambda x: x.title.lower() not in ignored_chapters, chaps))
+        done_chapters = 0
+        Path(chapters_folder).mkdir(parents=True, exist_ok=True)
+        for chap in wanted_chapters:
+            chapter_audio = audio[chap.start:chap.end].fade_in(
+                1000).fade_out(1000)
+            chapter_audio_file = tmpdir + "/" + chap.title + ".mp3"
+            chapter_video_file = tmpdir + "/" + chap.title + ".mp4"
+            output_chapter_video_file = chapters_folder + chap.title + ".mp4"
+            chapter_video_title = title.upper() + " > " + chap.title
+            # export mp3
+            chapter_audio.export(chapter_audio_file, format="mp3")
+            # produce video
+            subprocess.run(["audio-visualizer-python", "-i", chapter_audio_file, "-o", chapter_video_file, "-t", chapter_video_title,
+                            "-b", background_image_file, "-C", "250,250,250", "-a", "1", "-x", "640", "-f", "Sulphur Point"])
+            # merge audio with video
+            subprocess.run(["ffmpeg", "-i", chapter_video_file, "-i", chapter_audio_file,
+                            "-c", "copy", "-map", "0:v:0", "-map", "1:a:0", output_chapter_video_file])
+
+            done_chapters += 1
+            if done_chapters < len(wanted_chapters):
+                print("{} of {} chapters done.".format(
+                    done_chapters, len(wanted_chapters)))
+            else:
+                print("All chapters exported!")
+
+
 def list_chaps(tag):
     "list chapters in tag"
     print("Chapters:")
@@ -75,6 +110,9 @@ def main():
     chapters_p1_file = sys.argv[2]
     chapters_p2_file = sys.argv[3]
     target_mp3 = sys.argv[4]
+    chapters_folder = sys.argv[5]
+    title = sys.argv[6]
+    background_image_file = sys.argv[7]
 
     chapters = []
     chapters += parse_chapters_file(chapters_p1_file, 0)
@@ -82,6 +120,9 @@ def main():
     print(len(chapters))
 
     add_chapters(target_mp3, chapters)
+    print("MP3 PRODUCED -- generating chapter videos")
+    generate_video_per_chapter(
+        target_mp3, chapters, chapters_folder, title, background_image_file)
 
 
 if __name__ == '__main__':

@@ -43,7 +43,7 @@ ffmpeg-normalize .artifacts/alex-passes.flac .artifacts/seb-passes.flac -tp 0 -o
 
 
 LOG "(4/7) PRE NORMALIZER COMPRESSOR/LIMITER/GAINER"
-ffmpeg -y -i .artifacts/alex-passes.flac -filter_complex "compand=points=-40/-900|-35/-30|-30/-20|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/alex-compressed.flac &
+ffmpeg -y -i .artifacts/alex-passes.flac -filter_complex "compand=points=-40/-900|-38/-30|-35/-25|-30/-18|-25/-13|-20/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/alex-compressed.flac &
 ffmpeg -y -i .artifacts/seb-passes.flac -filter_complex  "compand=points=-40/-900|-35/-30|-30/-20|-25/-16|-20/-13|-15/-10|-10/-5|0/0|20/0" -ar 44100 .artifacts/seb-compressed.flac &
 wait
 
@@ -58,10 +58,11 @@ sox -M .artifacts/sb.flac .artifacts/alex-compressed.flac .artifacts/seb-compres
 LOG "(7/7) PRODUCE MP3"
 ffmpeg -y -i .artifacts/all.flac -vn -ar 44100 -ac 2 -ab 192k -f mp3 -joint_stereo 1 "../../Finished Episodes/$1-192.mp3"
 
+audio_prod_time=`date +%s`
+LOG "AUDIO PRODUCED IN $((audio_prod_time-start_time)) SECONDS"
 
-LOG "(BONUS) ADD CHAPTERS TO MP3"
-../produce-chapters.py alex-1.flac labels-1.txt labels-2.txt "../../Finished Episodes/$1-192.mp3"
-
+LOG "(BONUS) ADD CHAPTERS TO MP3, produce video"
+../produce-chapters.py alex-1.flac labels-1.txt labels-2.txt "../../Finished Episodes/$1-192.mp3" "../../Finished Episodes/clips/$1/" $1 "../../Logo/Banner/video-background2.png"
 
 end_time=`date +%s`
-LOG "AUDIO PRODUCED IN $((end_time-start_time)) SECONDS"
+LOG "EVERYTHING PRODUCED IN $((end_time-start_time)) SECONDS"

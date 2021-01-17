@@ -6,10 +6,11 @@ Scripts used to produce episodes of Trevlig Mjukvara.
 - ffmpeg
 - ffmpeg-normalize
 - sox
-- avp (audio-visualizer-python, feature-newgui branch) 
 - chapters-support:
     - mp3chaps (pip3 install mp3chaps)
     - tinytag (pip3 install tinytag)
+    - pydub (pip install pydub)
+- audio-visualizer-python (see https://github.com/trevligmjukvara.se/audio-visualizer-python )
 
 ## Assumptions
 
@@ -18,17 +19,14 @@ Scripts used to produce episodes of Trevlig Mjukvara.
 The scripts assume that they are placed in a certain folder structure... 
 - Finished Episodes
 - Recordings
-    - produce-video.sh <--  
+    - produce-chapters.py <--  
     - produce-episode.sh <-- 
     - EpisodeRecordings1
     - EpisodeRecordings2
     - ...
 
-### Others
-- avp needs to have a "tm_template" template saved beforehand with two texts in the top two layers. 
-- And many more forgotten ones.
 
 ## Usage
-
-`./produce-episode.sh MIXED_RECORDINGS_FOLDER TITLE SUBTITLE`
+1. stand in the "Recordings" folder
+1. `./produce-episode.sh MIXED_RECORDINGS_FOLDER`
 
