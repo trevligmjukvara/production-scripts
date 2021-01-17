@@ -10,7 +10,7 @@ Scripts used to produce episodes of Trevlig Mjukvara.
     - mp3chaps (pip3 install mp3chaps)
     - tinytag (pip3 install tinytag)
     - pydub (pip install pydub)
-- audio-visualizer-python (see https://github.com/trevligmjukvara.se/audio-visualizer-python )
+- audio-visualizer-python (see https://github.com/trevligmjukvara/audio-visualizer-python )
 
 ## Assumptions
 
