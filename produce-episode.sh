@@ -62,7 +62,7 @@ audio_prod_time=`date +%s`
 LOG "AUDIO PRODUCED IN $((audio_prod_time-start_time)) SECONDS"
 
 LOG "(BONUS) ADD CHAPTERS TO MP3, produce video"
-../produce-chapters.py alex-1.flac labels-1.txt labels-2.txt "../../Finished Episodes/$1-192.mp3" "../../Finished Episodes/clips/$1/" $1 "../../Logo/Banner/video-background2.png"
+../produce-chapters.py alex-1.flac labels-1.txt labels-2.txt "../../Finished Episodes/$1-192.mp3" "../../Finished Episodes/clips/$1/" $1 "../../Branding/Banner/video-background-neutral.png" "../../Branding/Banner/video-background-evil.png" "../../Branding/Banner/video-background-good.png" "../../Branding/Banner/video-background-bloopers.png"
 
 end_time=`date +%s`
 LOG "EVERYTHING PRODUCED IN $((end_time-start_time)) SECONDS"
